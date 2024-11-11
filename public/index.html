@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+   <!-- <link rel="icon" type="image/png" href="favicon.png"> -->
+    <title> WebSocket </title>
+  </head>
+  <body>
+    <h2> Grønn Webteknologi - WebSocket </h2>
+    <div id="app">
+      <ul id="messages">
+        <li :key="'message' + index" v-for="(message, index) in listOfMessages">
+          {{message}}
+        </li>
+      </ul>
+      <div id="box1">
+        <input type="textArea" v-model="input" @keydown.enter="sendBroadcastMessage"/>
+        <button @click="sendBroadcastMessage">Send</button>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script type="module">
+      function generateLoremIpsum(length) {
+        const loremWords = [
+        "Lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
+        "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
+        "magna", "aliqua", "Ut", "enim", "ad", "minim", "veniam", "quis", "nostrud",
+        "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea",
+        "commodo", "consequat", "Duis", "aute", "irure", "dolor", "in", "reprehenderit",
+        "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla",
+        "pariatur"
+        ];
+    
+        let text = "Lorem ipsum ";
+        while (text.length < length) {
+          text += loremWords[Math.floor(Math.random() * loremWords.length)] + " ";
+        }
+        return text.trim().substring(0, length);
+      }
+
+      const socket = io({transports: ['websocket'], upgrade: false}); // transports added to prevent inital use of long polling on the client side
+      // const socket = io({transports: ['polling'], upgrade: false}); // uses long polling
+      // const socket = io(); // conventional socket.io transport
+      const vueApp = new Vue({
+        el: "#app",
+        data: {
+          input: "",
+          listOfMessages: [],
+        },
+        methods: {
+          sendBroadcastMessage() {
+            socket.emit("broadcast message", this.input);
+            this.input = "";
+          },
+        },
+        mounted() {
+          socket.on("chat message", (data) => {
+            vueApp.listOfMessages.push(`${data.id}: ${data.message}`); //client uses it's own socket id for messages sent by itself
+          });
+
+          // implementation of "auto-messaging" 
+          socket.on("chat message", (message) => {
+            const autoMessage = generateLoremIpsum(1000) // use generated Lorem Ipsum, adjust number of bytes per message
+            if (vueApp.listOfMessages.length < 11) {
+              setTimeout(function(){
+                socket.emit("broadcast message", autoMessage);
+              }, 3000); // adjust timeout for frequency of messages
+              }
+            else {
+              // do nothing
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

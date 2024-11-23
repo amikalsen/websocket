@@ -1,6 +1,6 @@
 # Grønn Webteknologi - WebSocket chat applikasjon
 
-Dette er en nettbasert chatapplikasjon som demonstrerer bruk av long polling for sanntidskommunikasjon. Applikasjonen bruker **Node.js**, **Express** og **Socket.IO** på backend, samt **Vue.js** på frontend.
+Dette er en nettbasert chatapplikasjon som demonstrerer bruk av WebSocket for sanntidskommunikasjon. Applikasjonen bruker **Node.js**, **Express** og **Socket.IO** på backend, samt **Vue.js** på frontend.
 
 
 

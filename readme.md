@@ -41,7 +41,7 @@ Du kan starte applikasjonen ved å kjøre:
 
 ### 4. Åpne applikasjonen
 
-Når applikasjonen kjører, åpne [http://localhost:3000](http://localhost:3000) i nettleseren for å begynne å bruke chatte-grensesnittet.
+Når applikasjonen kjører, kan du åpne [http://localhost:3000](http://localhost:3000) i nettleseren for å bruke applikasjonen.
 
 ---
 
